@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
+import Hue from './Hue';
 import './ColorPicker.css';
 
 const DEFAULT_COLORS = [
@@ -90,17 +91,16 @@ function ColorPicker({colors, displayHex, type}) {
 				)}
 			</div>
 
-			{active &&
-				type === 'defined' && (
-					<div
-						className="color-picker"
-						style={{
-							border: '1px solid',
-							display: 'inline-block',
-							padding: 24,
-							borderRadius: 4
-						}}
-					>
+			{active && (
+				<div
+					className="color-picker"
+					style={{
+						border: '1px solid',
+						padding: 24,
+						borderRadius: 4
+					}}
+				>
+					{type === 'defined' && (
 						<div
 							style={{
 								gridGap: 16,
@@ -116,8 +116,15 @@ function ColorPicker({colors, displayHex, type}) {
 								/>
 							))}
 						</div>
-					</div>
-				)}
+					)}
+
+					{type === 'custom' && (
+						<div>
+							<Hue />
+						</div>
+					)}
+				</div>
+			)}
 		</React.Fragment>
 	);
 }
@@ -131,7 +138,7 @@ ColorPicker.propTypes = {
 ColorPicker.defaultProps = {
 	colors: DEFAULT_COLORS,
 	displayHex: false,
-	type: 'defined'
+	type: 'custom'
 };
 
 export default ColorPicker;
