@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
+import tinycolor from 'tinycolor2';
 import Hue from './Hue';
+import Saturation from './Saturation';
 import './ColorPicker.css';
 
 const DEFAULT_COLORS = [
@@ -41,7 +43,7 @@ function Splotch({size = 24, value, ...otherProps}) {
 		<button
 			{...otherProps}
 			style={{
-				background: `#${value}`,
+				background: value,
 				border: '1px solid #E7E7ED',
 				borderRadius: 4,
 				cursor: 'pointer',
@@ -49,14 +51,16 @@ function Splotch({size = 24, value, ...otherProps}) {
 				padding: 0,
 				width: size
 			}}
-			title={`#${value}`}
+			title={value}
 		/>
 	);
 }
 
-function ColorPicker({colors, displayHex, type}) {
-	const [selectedHex, setHex] = useState('FFFFFF');
+function ColorPicker({colors, displayHex, type, value, onChange}) {
 	const [active, setActive] = useState(true);
+
+	const {r, g, b} = value.toRgb();
+	const {h, s, v} = value.toHsv();
 
 	return (
 		<React.Fragment>
@@ -70,10 +74,10 @@ function ColorPicker({colors, displayHex, type}) {
 						className="input-group-text input-group-text-secondary"
 						style={{padding: 0}}
 					>
-						<div className="custom-control custom-checkbox">
+						<div className="open-control open-checkbox">
 							<Splotch
 								className="btn btn-secondary"
-								value={selectedHex}
+								value={value.toHexString()}
 								size={28}
 							/>
 						</div>
@@ -84,7 +88,7 @@ function ColorPicker({colors, displayHex, type}) {
 						<input
 							aria-label="Search for"
 							className="form-control"
-							value={`#${selectedHex}`}
+							value={value.toHexString()}
 							readOnly
 						/>
 					</div>
@@ -96,11 +100,12 @@ function ColorPicker({colors, displayHex, type}) {
 					className="color-picker"
 					style={{
 						border: '1px solid',
+						display: 'inline-block',
 						padding: 24,
 						borderRadius: 4
 					}}
 				>
-					{type === 'defined' && (
+					{type === 'restricted' && (
 						<div
 							style={{
 								gridGap: 16,
@@ -110,7 +115,7 @@ function ColorPicker({colors, displayHex, type}) {
 						>
 							{colors.map(hex => (
 								<Splotch
-									onClick={() => setHex(hex)}
+									onClick={() => onChange(tinycolor(hex))}
 									key={hex}
 									value={hex}
 								/>
@@ -118,9 +123,58 @@ function ColorPicker({colors, displayHex, type}) {
 						</div>
 					)}
 
-					{type === 'custom' && (
+					{type === 'open' && (
 						<div>
-							<Hue />
+							<div
+								style={{
+									gridGap: 16,
+									display: 'grid',
+									gridTemplateColumns: 'repeat(6, 24px)'
+								}}
+							>
+								{Array(12)
+									.fill('#FFF')
+									.map((hex, i) => (
+										<Splotch
+											onClick={() => {}}
+											key={i}
+											value={hex}
+										/>
+									))}
+							</div>
+
+							<div style={{display: 'flex'}}>
+								<Saturation
+									hue={h}
+									color={value}
+									onChange={(saturation, visibility) => {
+										onChange(
+											tinycolor({
+												h,
+												s: saturation,
+												v: visibility
+											})
+										);
+									}}
+								/>
+
+								<div>
+									<div>R: {r}</div>
+
+									<div>G: {g}</div>
+
+									<div>B: {b}</div>
+								</div>
+							</div>
+
+							<Hue
+								onChange={hue => {
+									onChange(
+										tinycolor(`hsl(${hue}, 100%, 50%)`)
+									);
+								}}
+								value={h}
+							/>
 						</div>
 					)}
 				</div>
@@ -132,13 +186,16 @@ function ColorPicker({colors, displayHex, type}) {
 ColorPicker.propTypes = {
 	colors: PropTypes.arrayOf(PropTypes.string),
 	displayHex: PropTypes.bool,
-	type: PropTypes.oneOf(['defined', 'custom'])
+	type: PropTypes.oneOf(['restricted', 'open'])
 };
 
 ColorPicker.defaultProps = {
 	colors: DEFAULT_COLORS,
 	displayHex: false,
-	type: 'custom'
+	type: 'open',
+
+	value: tinycolor('#FFF'),
+	onChange: () => {}
 };
 
 export default ColorPicker;

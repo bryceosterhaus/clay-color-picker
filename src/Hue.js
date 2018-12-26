@@ -9,8 +9,7 @@ class Hue extends React.Component {
 		this._container = React.createRef();
 
 		this.state = {
-			left: 0,
-			selectedColor: this.props.initialValue
+			left: 0
 		};
 	}
 
@@ -37,14 +36,11 @@ class Hue extends React.Component {
 				? containerRect.width
 				: left;
 
-		const selectedHue = (left / containerRect.width) * 360;
+		const selectedHue = Math.floor((left / containerRect.width) * 360);
 
 		this.props.onChange(selectedHue);
 
 		this.setState({
-			selectedColor: tinycolor(
-				`hsl(${selectedHue}, 100%, 50%)`
-			).toHexString(),
 			left: left
 		});
 	};
@@ -66,7 +62,8 @@ class Hue extends React.Component {
 	};
 
 	render() {
-		const {left, selectedColor} = this.state;
+		const {left} = this.state;
+		const {value} = this.props;
 
 		return (
 			<div style={{position: 'relative'}} ref={this._container}>
@@ -83,12 +80,12 @@ class Hue extends React.Component {
 				<span
 					style={{
 						top: '-50%',
-						left: left - 8,
-						background: selectedColor,
+						left: left - 7,
+						background: `hsl(${value}, 100%, 50%)`,
 						border: '2px solid #FFF',
-						height: 16,
+						height: 14,
 						borderRadius: '50%',
-						width: 16,
+						width: 14,
 						position: 'absolute'
 					}}
 					onMouseDown={this.handleMouseDown}
@@ -101,12 +98,12 @@ class Hue extends React.Component {
 }
 
 Hue.propTypes = {
-	initialValue: PropTypes.number,
+	value: PropTypes.number,
 	onChange: PropTypes.func
 };
 
 Hue.defaultProps = {
-	initialValue: tinycolor(`hsl(0, 100%, 50%)`).toHexString(),
+	value: 0,
 	onChange: () => {}
 };
 

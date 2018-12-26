@@ -1,5 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import ColorPicker from './ColorPicker';
 
-ReactDOM.render(<ColorPicker />, document.getElementById('root'));
+function App() {
+	const [color, setColor] = useState();
+
+	return <ColorPicker onChange={setColor} value={color} />;
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
