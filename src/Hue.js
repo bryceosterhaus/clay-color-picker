@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import tinycolor from 'tinycolor2';
 
 class Hue extends React.Component {
 	constructor(props) {
@@ -66,17 +65,20 @@ class Hue extends React.Component {
 		const {value} = this.props;
 
 		return (
-			<div style={{position: 'relative'}} ref={this._container}>
-				<div
-					style={{
-						background:
-							'linear-gradient(270deg, #FC0D1B 0%, #FC22D6 18.23%, #1824FB 34.25%, #2BF6FD 50.28%, #2BFD2E 67.58%, #FCFD37 81.22%, #FC121B 100%)',
-						borderRadius: 4,
-						margin: 4,
-						height: 8
-					}}
-				/>
-
+			<div
+				style={{
+					background:
+						'linear-gradient(270deg, #FC0D1B 0%, #FC22D6 18.23%, #1824FB 34.25%, #2BF6FD 50.28%, #2BFD2E 67.58%, #FCFD37 81.22%, #FC121B 100%)',
+					borderRadius: 4,
+					margin: 4,
+					height: 8,
+					position: 'relative'
+				}}
+				onMouseDown={this.handleMouseDown}
+				onTouchMove={this.handleChange}
+				onTouchStart={this.handleChange}
+				ref={this._container}
+			>
 				<span
 					style={{
 						top: '-50%',
@@ -88,9 +90,6 @@ class Hue extends React.Component {
 						width: 14,
 						position: 'absolute'
 					}}
-					onMouseDown={this.handleMouseDown}
-					onTouchMove={this.handleChange}
-					onTouchStart={this.handleChange}
 				/>
 			</div>
 		);

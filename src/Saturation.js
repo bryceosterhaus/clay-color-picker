@@ -54,7 +54,9 @@ class Saturation extends React.Component {
 		const saturation = (left * 100) / containerRect.width;
 		const visibility = -((top * 100) / containerRect.height) + 100;
 
-		this.props.onChange(saturation, visibility);
+		this.props.onChange(
+			tinycolor({h: this.props.hue, s: saturation, v: visibility})
+		);
 
 		this.setState({
 			top,

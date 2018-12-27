@@ -57,10 +57,12 @@ function Splotch({size = 24, value, ...otherProps}) {
 }
 
 function ColorPicker({colors, displayHex, type, value, onChange}) {
+	const {h, s, v} = value.toHsv();
+
 	const [active, setActive] = useState(true);
+	const [selectedHue, setSelectedHue] = useState(h);
 
 	const {r, g, b} = value.toRgb();
-	const {h, s, v} = value.toHsv();
 
 	return (
 		<React.Fragment>
@@ -143,22 +145,14 @@ function ColorPicker({colors, displayHex, type, value, onChange}) {
 									))}
 							</div>
 
-							<div style={{display: 'flex'}}>
+							<div style={{display: 'flex', margin: '20px 0'}}>
 								<Saturation
-									hue={h}
+									hue={selectedHue}
 									color={value}
-									onChange={(saturation, visibility) => {
-										onChange(
-											tinycolor({
-												h,
-												s: saturation,
-												v: visibility
-											})
-										);
-									}}
+									onChange={onChange}
 								/>
 
-								<div>
+								<div style={{marginLeft: 16}}>
 									<div>R: {r}</div>
 
 									<div>G: {g}</div>
@@ -169,11 +163,10 @@ function ColorPicker({colors, displayHex, type, value, onChange}) {
 
 							<Hue
 								onChange={hue => {
-									onChange(
-										tinycolor(`hsl(${hue}, 100%, 50%)`)
-									);
+									onChange(tinycolor({h: hue, s, v}));
+									setSelectedHue(hue);
 								}}
-								value={h}
+								value={selectedHue}
 							/>
 						</div>
 					)}
@@ -193,7 +186,6 @@ ColorPicker.defaultProps = {
 	colors: DEFAULT_COLORS,
 	displayHex: false,
 	type: 'open',
-
 	value: tinycolor('#FFF'),
 	onChange: () => {}
 };
