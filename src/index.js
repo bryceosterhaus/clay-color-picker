@@ -5,7 +5,9 @@ import ColorPicker from './ColorPicker';
 function App() {
 	const [color, setColor] = useState();
 
-	return <ColorPicker onChange={setColor} value={color} />;
+	return (
+		<ColorPicker label="Default Colors" onChange={setColor} value={color} />
+	);
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));
