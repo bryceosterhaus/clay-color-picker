@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import tinycolor from 'tinycolor2';
 import Hue from './Hue';
-import Saturation from './Saturation';
+import GradientSelector from './GradientSelector';
 import './ColorPicker.css';
 
 const DEFAULT_COLORS = [
@@ -56,13 +56,23 @@ function Splotch({size = 24, value, ...otherProps}) {
 	);
 }
 
-function ColorPicker({colors, displayHex, label, type, value, onChange}) {
-	const {h, s, v} = value.toHsv();
-
+function ColorPicker({
+	colors,
+	customColors,
+	displayHex,
+	label,
+	onChange,
+	onCustomColorsChange,
+	value
+}) {
 	const [active, setActive] = useState(true);
-	const [selectedHue, setSelectedHue] = useState(h);
 
+	value = tinycolor(value);
+
+	const {h, s, v} = value.toHsv();
 	const {r, g, b} = value.toRgb();
+
+	const rgbArr = [[r, 'R'], [g, 'G'], [b, 'B']];
 
 	return (
 		<React.Fragment>
@@ -107,133 +117,113 @@ function ColorPicker({colors, displayHex, label, type, value, onChange}) {
 						borderRadius: 4
 					}}
 				>
-					{(type === 'restricted' || type === 'both') && (
-						<React.Fragment>
-							{label && (
-								<label
-									style={{
-										fontSize: 14,
-										color: '#6B6C7E',
-										marginBottom: 16
-									}}
-								>
-									{label}
-								</label>
-							)}
+					{label && (
+						<label
+							style={{
+								fontSize: 14,
+								color: '#6B6C7E',
+								marginBottom: 16
+							}}
+						>
+							{label}
+						</label>
+					)}
 
-							<div
-								style={{
-									gridGap: 16,
-									display: 'grid',
-									gridTemplateColumns: 'repeat(6, 24px)'
-								}}
-							>
-								{colors.map(hex => (
+					<div
+						style={{
+							gridGap: 16,
+							display: 'grid',
+							gridTemplateColumns: 'repeat(6, 24px)'
+						}}
+					>
+						{colors.map(hex => (
+							<Splotch
+								onClick={() => onChange(hex)}
+								key={hex}
+								value={hex}
+							/>
+						))}
+					</div>
+
+					<div>
+						<label
+							style={{
+								fontSize: 14,
+								color: '#6B6C7E',
+								margin: '16px 0'
+							}}
+						>
+							{'Custom Colors'}
+						</label>
+
+						<div
+							style={{
+								gridGap: 16,
+								display: 'grid',
+								gridTemplateColumns: 'repeat(6, 24px)'
+							}}
+						>
+							{Array(12)
+								.fill('#FFF')
+								.map((hex, i) => (
 									<Splotch
-										onClick={() => onChange(tinycolor(hex))}
-										key={hex}
+										onClick={() => {}}
+										key={i}
 										value={hex}
 									/>
 								))}
-							</div>
-						</React.Fragment>
-					)}
-
-					{(type === 'open' || type === 'both') && (
-						<div>
-							<label
-								style={{
-									fontSize: 14,
-									color: '#6B6C7E',
-									margin: '16px 0'
-								}}
-							>
-								{'Custom Colors'}
-							</label>
-
-							<div
-								style={{
-									gridGap: 16,
-									display: 'grid',
-									gridTemplateColumns: 'repeat(6, 24px)'
-								}}
-							>
-								{Array(12)
-									.fill('#FFF')
-									.map((hex, i) => (
-										<Splotch
-											onClick={() => {}}
-											key={i}
-											value={hex}
-										/>
-									))}
-							</div>
-
-							<div style={{display: 'flex', margin: '20px 0'}}>
-								<Saturation
-									hue={selectedHue}
-									color={value}
-									onChange={onChange}
-								/>
-
-								<div style={{marginLeft: 16}}>
-									<input
-										className="form-control"
-										value={`R: ${r}`}
-										readOnly
-										style={{
-											marginBottom: 16,
-											width: 64,
-											height: 32,
-											padding: 8,
-											fontSize: 14
-										}}
-									/>
-
-									<input
-										className="form-control"
-										value={`G: ${g}`}
-										readOnly
-										style={{
-											marginBottom: 16,
-											width: 64,
-											height: 32,
-											padding: 8,
-											fontSize: 14
-										}}
-									/>
-
-									<input
-										className="form-control"
-										value={`B: ${b}`}
-										readOnly
-										style={{
-											marginBottom: 16,
-											width: 64,
-											height: 32,
-											padding: 8,
-											fontSize: 14
-										}}
-									/>
-								</div>
-							</div>
-
-							<Hue
-								onChange={hue => {
-									onChange(tinycolor({h: hue, s, v}));
-									setSelectedHue(hue);
-								}}
-								value={selectedHue}
-							/>
-
-							<input
-								className="form-control"
-								value={value.toHexString().toUpperCase()}
-								readOnly
-								style={{marginTop: 20}}
-							/>
 						</div>
-					)}
+
+						<div style={{display: 'flex', margin: '20px 0'}}>
+							<GradientSelector
+								hue={h}
+								color={value}
+								onChange={(saturation, visibility) =>
+									onChange(
+										tinycolor({
+											h: h,
+											s: saturation,
+											v: visibility
+										}).toHexString()
+									)
+								}
+							/>
+
+							<div style={{marginLeft: 16}}>
+								{rgbArr.map(([val, name]) => (
+									<input
+										className="form-control"
+										key={name}
+										value={`${name}: ${val}`}
+										readOnly
+										style={{
+											marginBottom: 16,
+											width: 64,
+											height: 32,
+											padding: 8,
+											fontSize: 14
+										}}
+									/>
+								))}
+							</div>
+						</div>
+
+						<Hue
+							onChange={hue =>
+								onChange(
+									tinycolor({h: hue, s, v}).toHexString()
+								)
+							}
+							value={h}
+						/>
+
+						<input
+							className="form-control"
+							value={value.toHexString().toUpperCase()}
+							readOnly
+							style={{marginTop: 20}}
+						/>
+					</div>
 				</div>
 			)}
 		</React.Fragment>
@@ -242,17 +232,21 @@ function ColorPicker({colors, displayHex, label, type, value, onChange}) {
 
 ColorPicker.propTypes = {
 	colors: PropTypes.arrayOf(PropTypes.string),
-	label: PropTypes.string,
+	customColors: PropTypes.arrayOf(PropTypes.string),
 	displayHex: PropTypes.bool,
-	type: PropTypes.oneOf(['restricted', 'open', 'both'])
+	label: PropTypes.string,
+	onChange: PropTypes.func,
+	onCustomColorsChange: PropTypes.func,
+	value: PropTypes.string
 };
 
 ColorPicker.defaultProps = {
 	colors: DEFAULT_COLORS,
+	customColors: [],
 	displayHex: false,
-	type: 'both',
-	value: tinycolor('#FFF'),
-	onChange: () => {}
+	onChange: () => {},
+	onCustomColorsChange: () => {},
+	value: '#FFF'
 };
 
 export default ColorPicker;

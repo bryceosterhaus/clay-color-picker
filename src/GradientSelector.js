@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import tinycolor from 'tinycolor2';
 
-class Saturation extends React.Component {
+class GradientSelector extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -12,6 +11,24 @@ class Saturation extends React.Component {
 			left: 0,
 			top: 0
 		};
+	}
+
+	componentWillReceiveProps(nextProps) {
+		const container = this._container.current;
+
+		const containerRect = container.getBoundingClientRect();
+
+		const {s, v} = nextProps.color.toHsv();
+
+		const newLeft = Math.round((s * 100 * containerRect.width) / 100);
+		const newTop = Math.round(
+			((v * 100 - 100) * -1 * containerRect.height) / 100
+		);
+
+		this.setState({
+			left: newLeft,
+			top: newTop
+		});
 	}
 
 	componentWillUnmount() {
@@ -51,16 +68,16 @@ class Saturation extends React.Component {
 				? containerRect.height
 				: top;
 
-		const saturation = (left * 100) / containerRect.width;
-		const visibility = -((top * 100) / containerRect.height) + 100;
-
-		this.props.onChange(
-			tinycolor({h: this.props.hue, s: saturation, v: visibility})
+		const saturation = Math.round((left * 100) / containerRect.width);
+		const visibility = Math.round(
+			-((top * 100) / containerRect.height) + 100
 		);
 
+		this.props.onChange(saturation, visibility);
+
 		this.setState({
-			top,
-			left
+			left,
+			top
 		});
 	};
 
@@ -137,14 +154,14 @@ class Saturation extends React.Component {
 	}
 }
 
-Saturation.propTypes = {
+GradientSelector.propTypes = {
 	onChange: PropTypes.func,
 	hue: PropTypes.number
 };
 
-Saturation.defaultProps = {
+GradientSelector.defaultProps = {
 	onChange: () => {},
 	hue: 0
 };
 
-export default Saturation;
+export default GradientSelector;

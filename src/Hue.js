@@ -16,6 +16,18 @@ class Hue extends React.Component {
 		this.unbindEventListeners();
 	}
 
+	componentWillReceiveProps(nextProps) {
+		const container = this._container.current;
+
+		const containerRect = container.getBoundingClientRect();
+
+		const newLeft = (nextProps.value / 360) * containerRect.width;
+
+		this.setState({
+			left: newLeft
+		});
+	}
+
 	handleChange = (event, skip) => {
 		const container = this._container.current;
 
@@ -35,7 +47,7 @@ class Hue extends React.Component {
 				? containerRect.width
 				: left;
 
-		const selectedHue = Math.floor((left / containerRect.width) * 360);
+		const selectedHue = (left / containerRect.width) * 360;
 
 		this.props.onChange(selectedHue);
 
