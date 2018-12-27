@@ -16,12 +16,20 @@ class Hue extends React.Component {
 		this.unbindEventListeners();
 	}
 
+	componentDidMount() {
+		this.setInitialCoordinates(this.props.value);
+	}
+
 	componentWillReceiveProps(nextProps) {
+		this.setInitialCoordinates(nextProps.value);
+	}
+
+	setInitialCoordinates(hue) {
 		const container = this._container.current;
 
 		const containerRect = container.getBoundingClientRect();
 
-		const newLeft = (nextProps.value / 360) * containerRect.width;
+		const newLeft = (hue / 360) * containerRect.width;
 
 		this.setState({
 			left: newLeft

@@ -74,6 +74,10 @@ function ColorPicker({
 
 	const rgbArr = [[r, 'R'], [g, 'G'], [b, 'B']];
 
+	const CUSTOM_COLORS = customColors.concat(
+		Array(12 - customColors.length).fill('#FFF')
+	);
+
 	return (
 		<React.Fragment>
 			<div className="input-group" onClick={() => setActive(!active)}>
@@ -163,15 +167,13 @@ function ColorPicker({
 								gridTemplateColumns: 'repeat(6, 24px)'
 							}}
 						>
-							{Array(12)
-								.fill('#FFF')
-								.map((hex, i) => (
-									<Splotch
-										onClick={() => {}}
-										key={i}
-										value={hex}
-									/>
-								))}
+							{CUSTOM_COLORS.map((hex, i) => (
+								<Splotch
+									onClick={() => {}}
+									key={i}
+									value={hex}
+								/>
+							))}
 						</div>
 
 						<div style={{display: 'flex', margin: '20px 0'}}>

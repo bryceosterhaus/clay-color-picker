@@ -13,12 +13,20 @@ class GradientSelector extends React.Component {
 		};
 	}
 
+	componentDidMount() {
+		this.setInitialCoordinates(this.props.color);
+	}
+
 	componentWillReceiveProps(nextProps) {
+		this.setInitialCoordinates(nextProps.color);
+	}
+
+	setInitialCoordinates(color) {
 		const container = this._container.current;
 
 		const containerRect = container.getBoundingClientRect();
 
-		const {s, v} = nextProps.color.toHsv();
+		const {s, v} = color.toHsv();
 
 		const newLeft = Math.round((s * 100 * containerRect.width) / 100);
 		const newTop = Math.round(
