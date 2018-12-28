@@ -4,6 +4,7 @@ import ColorPicker from './ColorPicker';
 
 function App() {
 	const [color, setColor] = useState();
+	const [color2, setColor2] = useState();
 	const [customColors, setCustoms] = useState([
 		'#008000',
 		'#00FFFF',
@@ -24,8 +25,8 @@ function App() {
 				displayHex
 				label="Custom Colors"
 				onColorsChange={setCustoms}
-				onValueChange={setColor}
-				value={color}
+				onValueChange={setColor2}
+				value={color2}
 			/>
 		</div>
 	);
