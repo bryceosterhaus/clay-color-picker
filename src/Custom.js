@@ -14,24 +14,31 @@ Custom.propTypes = {
 };
 
 function Custom({colors, label, onChange, onColorsChange, value}) {
-	const [activeColor, setActiveColor] = useState(0);
-	const [hue, setHue] = useState(0);
-
 	const color = tinycolor(value);
+
+	const [activeSplotchIndex, setActiveSplotchIndex] = useState(0);
+	const [hue, setHue] = useState(0);
+	const [inputVal, setInputValue] = useState(color.toHex());
 
 	const {r, g, b} = color.toRgb();
 	const {s, v} = color.toHsv();
 
 	const rgbArr = [[r, 'R'], [g, 'G'], [b, 'B']];
 
-	const setNewColor = newColorHex => {
+	const setNewColor = (colorValue, setInput = true) => {
+		const hexString = colorValue.toHexString();
+
 		const newColors = [...colors];
 
-		newColors[activeColor] = newColorHex;
+		newColors[activeSplotchIndex] = hexString;
 
 		onColorsChange(newColors);
 
-		onChange(newColorHex);
+		onChange(hexString);
+
+		if (setInput) {
+			setInputValue(colorValue.toHex());
+		}
 	};
 
 	return (
@@ -57,9 +64,9 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 			>
 				{colors.map((hex, i) => (
 					<Splotch
-						active={hex === value}
+						active={i === activeSplotchIndex}
 						onClick={() => {
-							setActiveColor(i);
+							setActiveSplotchIndex(i);
 
 							setHue(tinycolor(hex).toHsv().h);
 
@@ -81,41 +88,63 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 								h: hue,
 								s: saturation,
 								v: visibility
-							}).toHexString()
+							})
 						);
 					}}
 				/>
 
 				<div style={{marginLeft: 16}}>
 					{rgbArr.map(([val, name]) => (
-						<React.Fragment key={name}>
-							<label>{name}</label>
+						<div
+							className="form-group"
+							style={{marginBottom: 16}}
+							key={name}
+						>
+							<div className="input-group">
+								<div className="input-group-item input-group-item-shrink input-group-prepend">
+									<span
+										className="input-group-text"
+										style={{
+											fontSize: 14,
+											height: 32,
+											lineHeight: 25,
+											minWidth: 24,
+											padding: 8
+										}}
+									>
+										{name}
+									</span>
+								</div>
+								<div className="input-group-append input-group-item">
+									<input
+										value={val}
+										className="form-control"
+										style={{
+											fontSize: 14,
+											height: 32,
+											padding: 8,
+											width: 60
+										}}
+										type="text"
+										onChange={event => {
+											const newVal = Number(
+												event.target.value
+											);
 
-							<input
-								className="form-control"
-								value={val}
-								onChange={event => {
-									const newVal = Number(event.target.value);
+											const color = tinycolor({
+												r: name === 'R' ? newVal : r,
+												g: name === 'G' ? newVal : g,
+												b: name === 'B' ? newVal : b
+											});
 
-									const color = tinycolor({
-										r: name === 'R' ? newVal : r,
-										g: name === 'G' ? newVal : g,
-										b: name === 'B' ? newVal : b
-									});
+											setHue(color.toHsv().h);
 
-									setHue(color.toHsv().h);
-
-									setNewColor(color.toHexString());
-								}}
-								style={{
-									marginBottom: 16,
-									width: 64,
-									height: 32,
-									padding: 8,
-									fontSize: 14
-								}}
-							/>
-						</React.Fragment>
+											setNewColor(color);
+										}}
+									/>
+								</div>
+							</div>
+						</div>
 					))}
 				</div>
 			</div>
@@ -124,17 +153,44 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 				onChange={hue => {
 					setHue(hue);
 
-					setNewColor(tinycolor({h: hue, s, v}).toHexString());
+					setNewColor(tinycolor({h: hue, s, v}));
 				}}
 				value={hue}
 			/>
 
-			<input
-				className="form-control"
-				value={color.toHexString().toUpperCase()}
-				readOnly
-				style={{marginTop: 20}}
-			/>
+			<div className="input-group" style={{marginTop: 20}}>
+				<div className="input-group-item input-group-item-shrink input-group-prepend">
+					<span className="input-group-text">{'#'}</span>
+				</div>
+				<div className="input-group-append input-group-item">
+					<input
+						value={inputVal.toUpperCase().substring(0, 6)}
+						className="form-control"
+						type="text"
+						onChange={event => {
+							const inputValue = event.target.value;
+
+							setInputValue(inputValue);
+
+							const newColor = tinycolor(inputValue);
+
+							if (newColor.isValid()) {
+								setHue(newColor.toHsv().h);
+								setNewColor(newColor, false);
+							}
+						}}
+						onBlur={event => {
+							const newColor = tinycolor(event.target.value);
+
+							if (newColor.isValid()) {
+								setInputValue(newColor.toHex());
+							} else {
+								setInputValue(color.toHex());
+							}
+						}}
+					/>
+				</div>
+			</div>
 		</div>
 	);
 }

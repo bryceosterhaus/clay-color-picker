@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 Splotch.propTypes = {
@@ -8,21 +8,11 @@ Splotch.propTypes = {
 };
 
 function Splotch({active, size = 24, value, ...otherProps}) {
-	const buttonEl = useRef(null);
-
-	useEffect(
-		() => {
-			if (active) {
-				buttonEl.current.focus();
-			}
-		},
-		[active]
-	);
-
 	return (
 		<button
 			{...otherProps}
 			style={{
+				...(active ? {outline: 'auto 3px #55ADFF'} : {}),
 				background: value,
 				border: '1px solid #E7E7ED',
 				borderRadius: 4,
@@ -32,7 +22,6 @@ function Splotch({active, size = 24, value, ...otherProps}) {
 				width: size
 			}}
 			title={value}
-			ref={buttonEl}
 		/>
 	);
 }

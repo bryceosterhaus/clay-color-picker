@@ -33,7 +33,6 @@ function Basic({colors, label, onChange, value}) {
 			>
 				{colors.map(hex => (
 					<Splotch
-						active={value === hex}
 						onClick={() => onChange(hex)}
 						key={hex}
 						value={hex}
