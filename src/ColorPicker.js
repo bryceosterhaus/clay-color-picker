@@ -53,7 +53,7 @@ ColorPicker.defaultProps = {
 	label: 'Colors',
 	onColorsChange: null,
 	onValueChange: () => {},
-	value: '#FFF'
+	value: '#FFFFFF'
 };
 
 function ColorPicker({
@@ -108,7 +108,7 @@ function ColorPicker({
 				<div
 					className="color-picker"
 					style={{
-						border: '1px solid',
+						boxShadow: '0px 4px 8px rgba(39, 40, 51, 0.12)',
 						display: 'inline-block',
 						padding: 24,
 						borderRadius: 4

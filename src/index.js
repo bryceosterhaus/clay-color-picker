@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import ColorPicker from './ColorPicker';
 
 function App() {
-	const [color, setColor] = useState('#8B0000');
+	const [color, setColor] = useState();
 	const [customColors, setCustoms] = useState([
 		'#008000',
 		'#00FFFF',
