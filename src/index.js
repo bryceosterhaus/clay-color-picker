@@ -11,13 +11,23 @@ function App() {
 	]);
 
 	return (
-		<ColorPicker
-			label="Default Colors"
-			onChange={setColor}
-			value={color}
-			customColors={customColors}
-			onCustomColorsChange={setCustoms}
-		/>
+		<div>
+			<ColorPicker
+				displayHex
+				label="Default Colors"
+				onValueChange={setColor}
+				value={color}
+			/>
+
+			<ColorPicker
+				colors={customColors}
+				displayHex
+				label="Custom Colors"
+				onColorsChange={setCustoms}
+				onValueChange={setColor}
+				value={color}
+			/>
+		</div>
 	);
 }
 
