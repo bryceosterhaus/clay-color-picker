@@ -1,6 +1,12 @@
 import React, {useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 
+Splotch.propTypes = {
+	active: PropTypes.bool,
+	size: PropTypes.number,
+	value: PropTypes.string
+};
+
 function Splotch({active, size = 24, value, ...otherProps}) {
 	const buttonEl = useRef(null);
 

@@ -1,17 +1,26 @@
 import React, {useState} from 'react';
+import PropTypes from 'prop-types';
 import tinycolor from 'tinycolor2';
 import Hue from './Hue';
 import Splotch from './Splotch';
 import GradientSelector from './GradientSelector';
 
+Custom.propTypes = {
+	colors: PropTypes.arrayOf(PropTypes.string),
+	label: PropTypes.string,
+	onChange: PropTypes.func,
+	onColorsChange: PropTypes.func,
+	value: PropTypes.string
+};
+
 function Custom({colors, label, onChange, onColorsChange, value}) {
-	value = tinycolor(value);
-
-	const {r, g, b} = value.toRgb();
-	const {h, s, v} = value.toHsv();
-
 	const [activeColor, setActiveColor] = useState(0);
-	const [hue, setHue] = useState(h);
+	const [hue, setHue] = useState(0);
+
+	const color = tinycolor(value);
+
+	const {r, g, b} = color.toRgb();
+	const {s, v} = color.toHsv();
 
 	const rgbArr = [[r, 'R'], [g, 'G'], [b, 'B']];
 
@@ -48,6 +57,7 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 			>
 				{colors.map((hex, i) => (
 					<Splotch
+						active={hex === value}
 						onClick={() => {
 							setActiveColor(i);
 
@@ -64,7 +74,7 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 			<div style={{display: 'flex', margin: '20px 0'}}>
 				<GradientSelector
 					hue={hue}
-					color={value}
+					color={color}
 					onChange={(saturation, visibility) => {
 						setNewColor(
 							tinycolor({
@@ -121,7 +131,7 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 
 			<input
 				className="form-control"
-				value={value.toHexString().toUpperCase()}
+				value={color.toHexString().toUpperCase()}
 				readOnly
 				style={{marginTop: 20}}
 			/>

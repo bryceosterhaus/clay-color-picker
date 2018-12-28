@@ -38,6 +38,24 @@ const DEFAULT_COLORS = [
 	'#FFEDF7'
 ];
 
+ColorPicker.propTypes = {
+	colors: PropTypes.arrayOf(PropTypes.string),
+	displayHex: PropTypes.bool,
+	label: PropTypes.string,
+	onColorsChange: PropTypes.func,
+	onValueChange: PropTypes.func,
+	value: PropTypes.string
+};
+
+ColorPicker.defaultProps = {
+	colors: null,
+	displayHex: true,
+	label: 'Colors',
+	onColorsChange: null,
+	onValueChange: () => {},
+	value: '#FFF'
+};
+
 function ColorPicker({
 	colors,
 	displayHex,
@@ -79,7 +97,7 @@ function ColorPicker({
 						<input
 							aria-label="Search for"
 							className="form-control"
-							value={value}
+							value={value.toUpperCase()}
 							readOnly
 						/>
 					</div>
@@ -121,23 +139,5 @@ function ColorPicker({
 		</div>
 	);
 }
-
-ColorPicker.propTypes = {
-	colors: PropTypes.arrayOf(PropTypes.string),
-	displayHex: PropTypes.bool,
-	label: PropTypes.string,
-	onColorsChange: PropTypes.func,
-	onValueChange: PropTypes.func,
-	value: PropTypes.string
-};
-
-ColorPicker.defaultProps = {
-	colors: null,
-	displayHex: true,
-	label: 'Colors',
-	onColorsChange: null,
-	onValueChange: () => {},
-	value: '#FFF'
-};
 
 export default ColorPicker;

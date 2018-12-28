@@ -1,6 +1,13 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Splotch from './Splotch';
+
+Basic.propTypes = {
+	colors: PropTypes.arrayOf(PropTypes.string),
+	label: PropTypes.string,
+	onChange: PropTypes.func,
+	value: PropTypes.string
+};
 
 function Basic({colors, label, onChange, value}) {
 	return (
@@ -36,5 +43,12 @@ function Basic({colors, label, onChange, value}) {
 		</React.Fragment>
 	);
 }
+
+Basic.propTypes = {
+	colors: PropTypes.arrayOf(PropTypes.string),
+	label: PropTypes.string,
+	onChange: PropTypes.func,
+	value: PropTypes.string
+};
 
 export default Basic;
