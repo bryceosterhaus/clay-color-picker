@@ -64,10 +64,10 @@ function ColorPicker({
 	onValueChange,
 	value
 }) {
-	const [active, setActive] = useState(true);
+	const [active, setActive] = useState(false);
 
 	return (
-		<div>
+		<div style={{position: 'relative'}}>
 			<div
 				className="input-group"
 				onClick={() => setActive(!active)}
@@ -108,10 +108,13 @@ function ColorPicker({
 				<div
 					className="color-picker"
 					style={{
+						background: '#FFF',
 						boxShadow: '0px 4px 8px rgba(39, 40, 51, 0.12)',
 						display: 'inline-block',
 						padding: 24,
-						borderRadius: 4
+						position: 'absolute',
+						borderRadius: 4,
+						zIndex: 5000
 					}}
 				>
 					{!onColorsChange && (
