@@ -126,7 +126,7 @@ function ColorPicker({
 					{onColorsChange && (
 						<Custom
 							colors={colors.concat(
-								Array(12 - colors.length).fill('#FFF')
+								Array(12 - colors.length).fill('#FFFFFF')
 							)}
 							label={label}
 							onChange={onValueChange}
