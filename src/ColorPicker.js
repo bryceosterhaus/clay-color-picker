@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Custom from './Custom';
 import Basic from './Basic';
 import Splotch from './Splotch';
-import './ColorPicker.css';
+import './ColorPicker.scss';
 
 const DEFAULT_COLORS = [
 	'#000000',
@@ -50,7 +50,6 @@ ColorPicker.propTypes = {
 ColorPicker.defaultProps = {
 	colors: null,
 	displayHex: true,
-	label: 'Colors',
 	onColorsChange: null,
 	onValueChange: () => {},
 	value: '#FFFFFF'
@@ -67,21 +66,14 @@ function ColorPicker({
 	const [active, setActive] = useState(false);
 
 	return (
-		<div style={{position: 'relative'}}>
-			<div
-				className="input-group"
-				onClick={() => setActive(!active)}
-				style={{maxWidth: 157}}
-			>
+		<div className="clay-color-picker">
+			<div className="input-group" onClick={() => setActive(!active)}>
 				<div
-					className={`input-group-item input-group-item-shrink ${
-						displayHex ? 'input-group-prepend' : ''
+					className={`input-group-item input-group-item-shrink${
+						displayHex ? ' input-group-prepend' : ''
 					}`}
 				>
-					<span
-						className="input-group-text input-group-text-secondary"
-						style={{padding: 0}}
-					>
+					<span className="input-group-text input-group-text-secondary">
 						<div className="open-control open-checkbox">
 							<Splotch
 								className="btn btn-secondary"
@@ -105,18 +97,7 @@ function ColorPicker({
 			</div>
 
 			{active && (
-				<div
-					className="color-picker"
-					style={{
-						background: '#FFF',
-						boxShadow: '0px 4px 8px rgba(39, 40, 51, 0.12)',
-						display: 'inline-block',
-						padding: 24,
-						position: 'absolute',
-						borderRadius: 4,
-						zIndex: 5000
-					}}
-				>
+				<div className="picker-overlay">
 					{!onColorsChange && (
 						<Basic
 							colors={colors || DEFAULT_COLORS}

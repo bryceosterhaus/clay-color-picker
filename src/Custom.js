@@ -67,35 +67,22 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 	return (
 		<div>
 			{label && (
-				<label
-					style={{
-						color: '#6B6C7E',
-						display: 'flex',
-						fontSize: 14,
-						justifyContent: 'space-between',
-						margin: '16px 0'
-					}}
-				>
+				<label>
 					{label}
 
 					<button
 						onClick={() => setEditorActive(!editorActive)}
-						className="btn btn-monospaced btn-sm"
+						className={`${
+							editorActive ? 'active ' : ''
+						}btn btn-monospaced btn-sm`}
 						type="button"
-						style={editorActive ? {background: '#F1F2F5'} : null}
 					>
 						<CustomColorIcon />
 					</button>
 				</label>
 			)}
 
-			<div
-				style={{
-					gridGap: 16,
-					display: 'grid',
-					gridTemplateColumns: 'repeat(6, 24px)'
-				}}
-			>
+			<div className="splotch-grid">
 				{colors.map((hex, i) => (
 					<Splotch
 						active={i === activeSplotchIndex}
@@ -118,7 +105,7 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 
 			{editorActive && (
 				<React.Fragment>
-					<div style={{display: 'flex', margin: '20px 0'}}>
+					<div className="gradient-info">
 						<GradientSelector
 							hue={hue}
 							color={color}
@@ -133,25 +120,12 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 							}}
 						/>
 
-						<div style={{marginLeft: 16}}>
+						<div>
 							{rgbArr.map(([val, name]) => (
-								<div
-									className="form-group"
-									style={{marginBottom: 16}}
-									key={name}
-								>
+								<div className="form-group rgb-info" key={name}>
 									<div className="input-group">
 										<div className="input-group-item input-group-item-shrink input-group-prepend">
-											<span
-												className="input-group-text"
-												style={{
-													fontSize: 14,
-													height: 32,
-													lineHeight: 25,
-													minWidth: 24,
-													padding: 8
-												}}
-											>
+											<span className="input-group-text">
 												{name}
 											</span>
 										</div>
@@ -159,12 +133,6 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 											<input
 												value={val}
 												className="form-control"
-												style={{
-													fontSize: 14,
-													height: 32,
-													padding: 8,
-													width: 60
-												}}
 												type="text"
 												onChange={event => {
 													const newVal = Number(
@@ -207,7 +175,7 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 						value={hue}
 					/>
 
-					<div className="input-group" style={{marginTop: 20}}>
+					<div className="input-group hex-info">
 						<div className="input-group-item input-group-item-shrink input-group-prepend">
 							<span className="input-group-text">{'#'}</span>
 						</div>

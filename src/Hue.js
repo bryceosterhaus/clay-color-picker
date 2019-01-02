@@ -86,29 +86,17 @@ class Hue extends React.Component {
 
 		return (
 			<div
-				style={{
-					background:
-						'linear-gradient(270deg, #FC0D1B 0%, #FC22D6 18.23%, #1824FB 34.25%, #2BF6FD 50.28%, #2BFD2E 67.58%, #FCFD37 81.22%, #FC121B 100%)',
-					borderRadius: 4,
-					margin: 4,
-					height: 8,
-					position: 'relative'
-				}}
+				className="hue-selector"
 				onMouseDown={this.handleMouseDown}
 				onTouchMove={this.handleChange}
 				onTouchStart={this.handleChange}
 				ref={this._container}
 			>
 				<span
+					className="pointer"
 					style={{
-						top: '-50%',
 						left: left - 7,
-						background: `hsl(${value}, 100%, 50%)`,
-						border: '2px solid #FFF',
-						height: 14,
-						borderRadius: '50%',
-						width: 14,
-						position: 'absolute'
+						background: `hsl(${value}, 100%, 50%)`
 					}}
 				/>
 			</div>

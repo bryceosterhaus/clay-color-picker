@@ -111,50 +111,24 @@ class GradientSelector extends React.Component {
 
 		return (
 			<div
+				className="gradient-selector"
 				style={{
-					position: 'relative',
-					background: `hsl(${hue}, 100%, 50%)`,
-					width: 144,
-					height: 128
+					background: `hsl(${hue}, 100%, 50%)`
 				}}
 				ref={this._container}
 				onMouseDown={this.handleMouseDown}
 				onTouchMove={this.handleChange}
 				onTouchStart={this.handleChange}
 			>
-				<div
-					style={{
-						background:
-							'linear-gradient(to right, #fff, rgba(255,255,255,0)',
-						position: 'absolute',
-						top: 0,
-						right: 0,
-						bottom: 0,
-						left: 0
-					}}
-				/>
-				<div
-					style={{
-						background:
-							'linear-gradient(to top, #000, rgba(0,0,0,0))',
-						position: 'absolute',
-						top: 0,
-						right: 0,
-						bottom: 0,
-						left: 0
-					}}
-				/>
+				<div className="light-gradient" />
+				<div className="dark-gradient" />
 
 				<span
+					className="pointer"
 					style={{
 						top: top - 7,
 						left: left - 7,
-						background: color.toHexString(),
-						border: '2px solid #FFF',
-						height: 14,
-						borderRadius: '50%',
-						width: 14,
-						position: 'absolute'
+						background: color.toHexString()
 					}}
 				/>
 			</div>

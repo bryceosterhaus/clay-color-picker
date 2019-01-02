@@ -8,22 +8,20 @@ Splotch.propTypes = {
 	value: PropTypes.string
 };
 
-function Splotch({active, size = 24, value, ...otherProps}) {
+function Splotch({active, className, size = 24, value, ...otherProps}) {
 	const requireBorder = tinycolor.readability('#FFF', value) < 1.1;
 
 	return (
 		<button
 			{...otherProps}
+			className={`splotch${' ' + className}`}
 			style={{
 				...(active ? {outline: 'auto 3px #55ADFF'} : {}),
 				...(requireBorder
 					? {border: '1px solid #E7E7ED'}
 					: {borderWidth: 0}),
 				background: value,
-				borderRadius: 4,
-				cursor: 'pointer',
 				height: size,
-				padding: 0,
 				width: size
 			}}
 			title={value}

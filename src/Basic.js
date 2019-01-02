@@ -11,26 +11,10 @@ Basic.propTypes = {
 
 function Basic({colors, label, onChange, value}) {
 	return (
-		<React.Fragment>
-			{label && (
-				<label
-					style={{
-						fontSize: 14,
-						color: '#6B6C7E',
-						marginBottom: 16
-					}}
-				>
-					{label}
-				</label>
-			)}
+		<div className="basic-color-picker">
+			{label && <label>{label}</label>}
 
-			<div
-				style={{
-					gridGap: 16,
-					display: 'grid',
-					gridTemplateColumns: 'repeat(6, 24px)'
-				}}
-			>
+			<div className="splotch-grid">
 				{colors.map(hex => (
 					<Splotch
 						onClick={() => onChange(hex)}
@@ -39,7 +23,7 @@ function Basic({colors, label, onChange, value}) {
 					/>
 				))}
 			</div>
-		</React.Fragment>
+		</div>
 	);
 }
 
