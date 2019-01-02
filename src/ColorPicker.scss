@@ -11,6 +11,10 @@
 		font-size: 14px;
 		justify-content: space-between;
 		margin: 16px 0;
+
+		&:first-child {
+			margin-top: 0;
+		}
 	}
 
 	> .input-group {
