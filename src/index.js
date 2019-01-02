@@ -14,7 +14,7 @@ function App() {
 	return (
 		<div>
 			<ColorPicker
-				displayHex
+				allowAny
 				label="Default Colors"
 				onValueChange={setColor}
 				value={color}
@@ -22,7 +22,6 @@ function App() {
 
 			<ColorPicker
 				colors={customColors}
-				displayHex
 				label="Custom Colors"
 				onColorsChange={setCustoms}
 				onValueChange={setColor2}

@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
+import tinycolor from 'tinycolor2';
 import Custom from './Custom';
 import Basic from './Basic';
 import Splotch from './Splotch';
-import {sub} from './util';
+import {HEX_REGEX, sub} from './util';
 import './ColorPicker.scss';
 
 const ESC_KEY_CODE = 27;
@@ -47,12 +48,12 @@ const DEFAULT_ARIA_LABELS = {
 };
 
 ColorPicker.propTypes = {
+	allowAny: PropTypes.bool,
 	ariaLabels: PropTypes.shape({
 		selectionIs: PropTypes.string,
 		selectColor: PropTypes.string
 	}),
 	colors: PropTypes.arrayOf(PropTypes.string),
-	displayHex: PropTypes.bool,
 	label: PropTypes.string,
 	onColorsChange: PropTypes.func,
 	onValueChange: PropTypes.func,
@@ -60,25 +61,42 @@ ColorPicker.propTypes = {
 };
 
 ColorPicker.defaultProps = {
+	allowAny: false,
 	ariaLabels: DEFAULT_ARIA_LABELS,
 	colors: null,
-	displayHex: true,
 	onColorsChange: null,
 	onValueChange: () => {},
 	value: '#FFFFFF'
 };
 
 function ColorPicker({
+	allowAny,
 	ariaLabels,
 	colors,
-	displayHex,
 	label,
 	onColorsChange,
 	onValueChange,
 	value
 }) {
 	const containerRef = useRef(null);
+	const inputRef = useRef(null);
 	const [active, setActive] = useState(false);
+	const [inputValue, setInputValue] = useState(value.substring(1, 7));
+
+	const handleNewInputValue = value => {
+		const match = value.match(HEX_REGEX);
+
+		setInputValue(match ? match[0] : '');
+	};
+
+	useEffect(
+		() => {
+			if (document.activeElement !== inputRef.current) {
+				handleNewInputValue(value.substring(1, 7));
+			}
+		},
+		[value]
+	);
 
 	useEffect(() => {
 		const handleClick = event => {
@@ -106,10 +124,10 @@ function ColorPicker({
 
 	return (
 		<div className="clay-color-picker" ref={containerRef}>
-			<div className="input-group" onClick={() => setActive(!active)}>
+			<div className="input-group">
 				<div
 					className={`input-group-item input-group-item-shrink${
-						displayHex ? ' input-group-prepend' : ''
+						allowAny || onColorsChange ? ' input-group-prepend' : ''
 					}`}
 				>
 					<span className="input-group-text input-group-text-secondary">
@@ -117,6 +135,7 @@ function ColorPicker({
 							<Splotch
 								aria-label={ariaLabels.selectColor}
 								className="btn btn-secondary"
+								onClick={() => setActive(!active)}
 								value={value}
 								size={28}
 							/>
@@ -124,15 +143,46 @@ function ColorPicker({
 					</span>
 				</div>
 
-				{displayHex && (
-					<div className="input-group-append input-group-item">
-						<input
-							aria-label={sub(ariaLabels.selectionIs, [value])}
-							className="form-control"
-							value={value.toUpperCase()}
-							readOnly
-						/>
-					</div>
+				{(allowAny || onColorsChange) && (
+					<React.Fragment>
+						<div className="input-group-append input-group-item">
+							<input
+								aria-label={sub(ariaLabels.selectionIs, [
+									value
+								])}
+								className="form-control"
+								value={
+									'#' +
+									inputValue.toUpperCase().substring(0, 6)
+								}
+								onChange={event => {
+									const newInputValue = event.target.value;
+
+									const newColor = tinycolor(newInputValue);
+
+									handleNewInputValue(newInputValue);
+
+									if (newColor.isValid()) {
+										onValueChange(newColor.toHexString());
+									}
+								}}
+								onBlur={event => {
+									const newColor = tinycolor(
+										event.target.value
+									);
+
+									const hexString = newColor.isValid()
+										? newColor.toHexString()
+										: value;
+
+									onValueChange(hexString);
+									handleNewInputValue(hexString);
+								}}
+								ref={inputRef}
+								type="text"
+							/>
+						</div>
+					</React.Fragment>
 				)}
 			</div>
 

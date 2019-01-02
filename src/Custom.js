@@ -4,6 +4,7 @@ import tinycolor from 'tinycolor2';
 import Hue from './Hue';
 import Splotch from './Splotch';
 import GradientSelector from './GradientSelector';
+import {HEX_REGEX} from './util';
 
 function CustomColorIcon() {
 	return (
@@ -27,6 +28,38 @@ function CustomColorIcon() {
 	);
 }
 
+RGBInput.propTypes = {
+	onChange: PropTypes.func,
+	name: PropTypes.string,
+	value: PropTypes.number
+};
+
+function RGBInput({onChange, name, value}) {
+	return (
+		<div className="form-group rgb-info">
+			<div className="input-group">
+				<div className="input-group-item input-group-item-shrink input-group-prepend">
+					<span className="input-group-text">
+						{name.toUpperCase()}
+					</span>
+				</div>
+				<div className="input-group-append input-group-item">
+					<input
+						value={value}
+						className="form-control"
+						type="text"
+						onChange={event => {
+							const newVal = Number(event.target.value);
+
+							onChange({[name]: newVal});
+						}}
+					/>
+				</div>
+			</div>
+		</div>
+	);
+}
+
 Custom.propTypes = {
 	colors: PropTypes.arrayOf(PropTypes.string),
 	label: PropTypes.string,
@@ -46,7 +79,13 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 	const {r, g, b} = color.toRgb();
 	const {s, v} = color.toHsv();
 
-	const rgbArr = [[r, 'R'], [g, 'G'], [b, 'B']];
+	const rgbArr = [[r, 'r'], [g, 'g'], [b, 'b']];
+
+	const handleNewInputValue = value => {
+		const match = value.match(HEX_REGEX);
+
+		setInputValue(match ? match[0] : '');
+	};
 
 	const setNewColor = (colorValue, setInput = true) => {
 		const hexString = colorValue.toHexString();
@@ -60,7 +99,7 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 		onChange(hexString);
 
 		if (setInput) {
-			setInputValue(colorValue.toHex());
+			handleNewInputValue(colorValue.toHex());
 		}
 	};
 
@@ -121,47 +160,24 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 						/>
 
 						<div>
-							{rgbArr.map(([val, name]) => (
-								<div className="form-group rgb-info" key={name}>
-									<div className="input-group">
-										<div className="input-group-item input-group-item-shrink input-group-prepend">
-											<span className="input-group-text">
-												{name}
-											</span>
-										</div>
-										<div className="input-group-append input-group-item">
-											<input
-												value={val}
-												className="form-control"
-												type="text"
-												onChange={event => {
-													const newVal = Number(
-														event.target.value
-													);
+							{rgbArr.map(([val, key]) => (
+								<RGBInput
+									key={key}
+									value={val}
+									name={key}
+									onChange={newVal => {
+										const color = tinycolor({
+											r,
+											g,
+											b,
+											...newVal
+										});
 
-													const color = tinycolor({
-														r:
-															name === 'R'
-																? newVal
-																: r,
-														g:
-															name === 'G'
-																? newVal
-																: g,
-														b:
-															name === 'B'
-																? newVal
-																: b
-													});
+										setHue(color.toHsv().h);
 
-													setHue(color.toHsv().h);
-
-													setNewColor(color);
-												}}
-											/>
-										</div>
-									</div>
-								</div>
+										setNewColor(color);
+									}}
+								/>
 							))}
 						</div>
 					</div>
@@ -176,18 +192,17 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 					/>
 
 					<div className="input-group hex-info">
-						<div className="input-group-item input-group-item-shrink input-group-prepend">
-							<span className="input-group-text">{'#'}</span>
-						</div>
 						<div className="input-group-append input-group-item">
 							<input
-								value={inputVal.toUpperCase().substring(0, 6)}
+								value={
+									'#' + inputVal.toUpperCase().substring(0, 6)
+								}
 								className="form-control"
 								type="text"
 								onChange={event => {
 									const inputValue = event.target.value;
 
-									setInputValue(inputValue);
+									handleNewInputValue(inputValue);
 
 									const newColor = tinycolor(inputValue);
 
@@ -202,9 +217,9 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 									);
 
 									if (newColor.isValid()) {
-										setInputValue(newColor.toHex());
+										handleNewInputValue(newColor.toHex());
 									} else {
-										setInputValue(color.toHex());
+										handleNewInputValue(color.toHex());
 									}
 								}}
 							/>
