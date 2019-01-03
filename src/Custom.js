@@ -106,9 +106,8 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 	return (
 		<div>
 			{label && (
-				<label>
-					{label}
-
+				<div className="label-container">
+					<label>{label}</label>
 					<button
 						onClick={() => setEditorActive(!editorActive)}
 						className={`${
@@ -118,7 +117,7 @@ function Custom({colors, label, onChange, onColorsChange, value}) {
 					>
 						<CustomColorIcon />
 					</button>
-				</label>
+				</div>
 			)}
 
 			<div className="splotch-grid">

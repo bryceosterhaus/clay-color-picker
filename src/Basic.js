@@ -12,7 +12,11 @@ Basic.propTypes = {
 function Basic({colors, label, onChange, value}) {
 	return (
 		<div className="basic-color-picker">
-			{label && <label>{label}</label>}
+			{label && (
+				<div className="label-container">
+					<label>{label}</label>
+				</div>
+			)}
 
 			<div className="splotch-grid">
 				{colors.map(hex => (

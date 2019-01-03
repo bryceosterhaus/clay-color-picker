@@ -7,14 +7,7 @@
 
 	label {
 		color: #6b6c7e;
-		display: flex;
 		font-size: 14px;
-		justify-content: space-between;
-		margin: 16px 0;
-
-		&:first-child {
-			margin-top: 0;
-		}
 	}
 
 	> .input-group {
@@ -88,6 +81,16 @@
 			height: 14px;
 			position: absolute;
 			width: 14px;
+		}
+	}
+
+	.label-container {
+		display: flex;
+		justify-content: space-between;
+		margin: 16px 0;
+
+		&:first-child {
+			margin-top: 0;
 		}
 	}
 
